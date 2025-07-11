@@ -1,15 +1,21 @@
 // lib/presentation/widgets/asia_lateral_totals_section.dart
 import 'package:bem_te_vi/core/constants/app_strings.dart';
-import 'package:bem_te_vi/core/models/totals_data.dart';
+import 'package:bem_te_vi/core/models/results__models.dart';
 import 'package:flutter/material.dart';
 
 class AsiaLateralTotalsSection extends StatelessWidget {
-  final TotalsData totals;
+  final IscnsciResult? result;
 
-  const AsiaLateralTotalsSection({super.key, required this.totals});
+  const AsiaLateralTotalsSection({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
+    if (result == null) {
+      return const Card(child: Padding(padding: EdgeInsets.all(16.0), child: Center(child: Text("Preencha o formulário para ver os totais."))));
+    }
+    
+    final totals = result!.totals;
+
     return Card(
       elevation: 4.0,
       margin: const EdgeInsets.symmetric(vertical: 20.0),
@@ -21,37 +27,31 @@ class AsiaLateralTotalsSection extends StatelessWidget {
           children: [
             Text(
               'Totais Laterais do Exame',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const Divider(height: 20, thickness: 1.5),
             const SizedBox(height: 10),
-
-            // --- Totais do Lado Direito ---
             _buildTotalsTable(
               context,
               label: AppStrings.totalsLabelRight,
-              motorValue: totals.rightMotorTotal.toString(),
-              lightTouchValue: totals.rightLightTouchTotal.toString(),
-              pinPrickValue: totals.rightPinPrickTotal.toString(),
+              motorValue: totals.rightMotor.toString(),
+              lightTouchValue: totals.lightTouchRight.toString(),
+              pinPrickValue: totals.pinPrickRight.toString(),
               motorMax: '50',
               sensoryMax: '56',
-              isLeft: false, // Este é o lado direito
+              isLeft: false,
             ),
             const SizedBox(height: 20),
-
-            // --- Totais do Lado Esquerdo ---
             _buildTotalsTable(
               context,
               label: AppStrings.totalsLabelLeft,
-              motorValue: totals.leftMotorTotal.toString(),
-              lightTouchValue: totals.leftLightTouchTotal.toString(),
-              pinPrickValue: totals.leftPinPrickTotal.toString(),
+              motorValue: totals.leftMotor.toString(),
+              lightTouchValue: totals.lightTouchLeft.toString(),
+              pinPrickValue: totals.pinPrickLeft.toString(),
               motorMax: '50',
               sensoryMax: '56',
-              isLeft: true, // Este é o lado esquerdo
+              isLeft: true,
             ),
           ],
         ),
@@ -59,123 +59,43 @@ class AsiaLateralTotalsSection extends StatelessWidget {
     );
   }
 
-  // NOVO: Método para construir a tabela de totais para cada lado
-  Widget _buildTotalsTable(
-    BuildContext context, {
-    required String label,
-    required String motorValue,
-    required String lightTouchValue,
-    required String pinPrickValue,
-    required String motorMax,
-    required String sensoryMax,
-    required bool isLeft,
-  }) {
-    // Definindo a ordem das colunas para direita/esquerda
+  Widget _buildTotalsTable(BuildContext context, {required String label, required String motorValue, required String lightTouchValue, required String pinPrickValue, required String motorMax, required String sensoryMax, required bool isLeft}) {
     final List<Widget> topRowCells = isLeft
-        ? [
-            _buildValueBox(lightTouchValue), // LT Esquerda
-            _buildValueBox(pinPrickValue), // PP Esquerda
-            _buildValueBox(motorValue), // Motor Esquerda
-          ]
-        : [
-            _buildValueBox(motorValue), // Motor Direita
-            _buildValueBox(lightTouchValue), // LT Direita
-            _buildValueBox(pinPrickValue), // PP Direita
-          ];
+        ? [_buildValueBox(lightTouchValue), _buildValueBox(pinPrickValue), _buildValueBox(motorValue)]
+        : [_buildValueBox(motorValue), _buildValueBox(lightTouchValue), _buildValueBox(pinPrickValue)];
 
     final List<Widget> bottomRowCells = isLeft
-        ? [
-            Text(
-              '(${sensoryMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-            Text(
-              '(${sensoryMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-            Text(
-              '(${motorMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-          ]
-        : [
-            Text(
-              '(${motorMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-            Text(
-              '(${sensoryMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-            Text(
-              '(${sensoryMax})',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
-            ),
-          ];
+        ? [Text('($sensoryMax)'), Text('($sensoryMax)'), Text('($motorMax)')]
+        : [Text('($motorMax)'), Text('($sensoryMax)'), Text('($sensoryMax)')];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch, // Estica a coluna
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Rótulo do lado (RIGHT TOTALS / LEFT TOTALS)
         Padding(
-          padding: EdgeInsets.only(
-            left: isLeft ? 0 : 8.0,
-            right: isLeft ? 8.0 : 0,
-            bottom: 4.0,
-          ),
+          padding: EdgeInsets.only(left: isLeft ? 0 : 8.0, right: isLeft ? 8.0 : 0, bottom: 4.0),
           child: Align(
             alignment: isLeft ? Alignment.centerRight : Alignment.centerLeft,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey,
-              ),
-            ),
+            child: Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           ),
         ),
-        // A Tabela para os valores e máximos
         Table(
-          // Definimos a largura das colunas para tentar alinhar
-          // de forma proporcional, mantendo o espaçamento igual para os 3 itens
-          columnWidths: const {
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-            2: FlexColumnWidth(1),
-          },
+          columnWidths: const {0: FlexColumnWidth(1), 1: FlexColumnWidth(1), 2: FlexColumnWidth(1)},
           children: [
-            TableRow(
-              children: topRowCells
-                  .map((widget) => TableCell(child: Center(child: widget)))
-                  .toList(),
-            ),
-            TableRow(
-              children: bottomRowCells
-                  .map((widget) => TableCell(child: Center(child: widget)))
-                  .toList(),
-            ),
+            TableRow(children: topRowCells.map((widget) => TableCell(child: Center(child: widget))).toList()),
+            TableRow(children: bottomRowCells.map((widget) => TableCell(child: Center(child: DefaultTextStyle(style: const TextStyle(fontSize: 13, color: Colors.grey), child: widget)))).toList()),
           ],
         ),
       ],
     );
   }
 
-  // Método auxiliar para construir a caixa do valor (usado dentro da Table)
   Widget _buildValueBox(String value) {
     return Container(
-      width: 55, // Largura fixa para a caixa do valor
+      width: 55,
       height: 40,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400, width: 1.5),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.grey.shade100,
-      ),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width: 1.5), borderRadius: BorderRadius.circular(8), color: Colors.grey.shade100),
       alignment: Alignment.center,
-      child: Text(
-        value,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
+      child: Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
     );
   }
 }

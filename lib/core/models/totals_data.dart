@@ -1,29 +1,34 @@
 // lib/core/models/totals_data.dart
 
-/// Representa os resultados totais e a classificação final do exame ISNCSCI (ASIA).
 class TotalsData {
-  // Totais de Escores Sensoriais (Toque Leve e Picada)
+  // Totais de Escores Sensoriais
   final int rightLightTouchTotal;
   final int leftLightTouchTotal;
   final int rightPinPrickTotal;
   final int leftPinPrickTotal;
 
-  // ▼▼▼ CAMPOS ATUALIZADOS E ADICIONADOS ▼▼▼
-  // Subscores Motores (MMSS e MMII)
-  final int uemsRight; // Upper Extremity Motor Score - Direita (C5-T1)
-  final int uemsLeft; // Upper Extremity Motor Score - Esquerda (C5-T1)
-  final int lemsRight; // Lower Extremity Motor Score - Direita (L2-S1)
-  final int lemsLeft; // Lower Extremity Motor Score - Esquerda (L2-S1)
+  // Subscores Motores
+  final int uemsRight;
+  final int uemsLeft;
+  final int lemsRight;
+  final int lemsLeft;
 
-  // Totais Motores (soma dos subscores)
+  // Totais Motores (getters)
   int get rightMotorTotal => uemsRight + lemsRight;
   int get leftMotorTotal => uemsLeft + lemsLeft;
-  // ▲▲▲ FIM DAS MUDANÇAS ▲▲▲
+
+  // ▼▼▼ CAMPOS ADICIONADOS ▼▼▼
+  // Níveis determinados para cada lado
+  final String rightSensoryLevel;
+  final String leftSensoryLevel;
+  final String rightMotorLevel;
+  final String leftMotorLevel;
+  // ▲▲▲ FIM DOS CAMPOS ADICIONADOS ▲▲▲
 
   // Classificações e Níveis Finais
-  final String neurologicalLevelOfInjury; // Nível Neurológico da Lesão (NNL)
-  final String completeness; // Completude (Completo/Incompleto)
-  final String asiaImpairmentScale; // Escala de Deficiência ASIA (EDA)
+  final String neurologicalLevelOfInjury;
+  final String completeness;
+  final String asiaImpairmentScale;
 
   // Zonas de Preservação Parcial (ZPP)
   final String rightSensoryZpp;
@@ -40,6 +45,11 @@ class TotalsData {
     this.uemsLeft = 0,
     this.lemsRight = 0,
     this.lemsLeft = 0,
+    // Adicionar ao construtor
+    this.rightSensoryLevel = 'N/A',
+    this.leftSensoryLevel = 'N/A',
+    this.rightMotorLevel = 'N/A',
+    this.leftMotorLevel = 'N/A',
     this.neurologicalLevelOfInjury = 'N/A',
     this.completeness = 'N/A',
     this.asiaImpairmentScale = 'N/A',
@@ -58,6 +68,11 @@ class TotalsData {
     int? uemsLeft,
     int? lemsRight,
     int? lemsLeft,
+    // Adicionar ao copyWith
+    String? rightSensoryLevel,
+    String? leftSensoryLevel,
+    String? rightMotorLevel,
+    String? leftMotorLevel,
     String? neurologicalLevelOfInjury,
     String? completeness,
     String? asiaImpairmentScale,
@@ -75,8 +90,12 @@ class TotalsData {
       uemsLeft: uemsLeft ?? this.uemsLeft,
       lemsRight: lemsRight ?? this.lemsRight,
       lemsLeft: lemsLeft ?? this.lemsLeft,
-      neurologicalLevelOfInjury:
-          neurologicalLevelOfInjury ?? this.neurologicalLevelOfInjury,
+      // Usar os novos campos
+      rightSensoryLevel: rightSensoryLevel ?? this.rightSensoryLevel,
+      leftSensoryLevel: leftSensoryLevel ?? this.leftSensoryLevel,
+      rightMotorLevel: rightMotorLevel ?? this.rightMotorLevel,
+      leftMotorLevel: leftMotorLevel ?? this.leftMotorLevel,
+      neurologicalLevelOfInjury: neurologicalLevelOfInjury ?? this.neurologicalLevelOfInjury,
       completeness: completeness ?? this.completeness,
       asiaImpairmentScale: asiaImpairmentScale ?? this.asiaImpairmentScale,
       rightSensoryZpp: rightSensoryZpp ?? this.rightSensoryZpp,

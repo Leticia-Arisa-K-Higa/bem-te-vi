@@ -1,133 +1,68 @@
 // lib/presentation/widgets/asia_subscores_section.dart
 import 'package:bem_te_vi/core/constants/app_strings.dart';
-import 'package:bem_te_vi/core/models/totals_data.dart';
+import 'package:bem_te_vi/core/models/results__models.dart';
 import 'package:flutter/material.dart';
 
 class AsiaSubscoresSection extends StatelessWidget {
-  final TotalsData totals;
+  final IscnsciResult? result;
 
-  const AsiaSubscoresSection({super.key, required this.totals});
+  const AsiaSubscoresSection({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
+    if (result == null) {
+      return const SizedBox.shrink();
+    }
+    
+    final totals = result!.totals;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // --- Subscores Motores ---
         Card(
-          elevation: 2.0,
+          elevation: 4.0,
           margin: const EdgeInsets.only(bottom: 20.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  AppStrings.motorSubscoresTitle,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const Divider(height: 20, thickness: 1),
-
-                // ▼▼▼ CÓDIGO CORRIGIDO ▼▼▼
-                _buildSubscoreRow(
-                  label: AppStrings.uerLabel,
-                  value: totals.uemsRight.toString(),
-                  maxScore: '25',
-                ),
+                Text(AppStrings.motorSubscoresTitle, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const Divider(height: 20, thickness: 1.5),
+                _buildSubscoreRow(label: AppStrings.uerLabel, value: totals.upperExtremityRight.toString(), maxScore: '25'),
                 _buildSubscoreGroupSeparator(),
-                _buildSubscoreRow(
-                  label: '+ ${AppStrings.uelLabel}',
-                  value: totals.uemsLeft.toString(),
-                  maxScore: '25',
-                ),
-                _buildTotalSubscoreRow(
-                  label: AppStrings.uemsTotal,
-                  value: (totals.uemsRight + totals.uemsLeft).toString(),
-                  maxScore: '50',
-                ),
+                _buildSubscoreRow(label: '+ ${AppStrings.uelLabel}', value: totals.upperExtremityLeft.toString(), maxScore: '25'),
+                _buildTotalSubscoreRow(label: AppStrings.uemsTotal, value: totals.upperExtremity.toString(), maxScore: '50'),
                 const Divider(height: 20, thickness: 1.0),
-                _buildSubscoreRow(
-                  label: AppStrings.lerLabel,
-                  value: totals.lemsRight.toString(),
-                  maxScore: '25',
-                ),
+                _buildSubscoreRow(label: AppStrings.lerLabel, value: totals.lowerExtremityRight.toString(), maxScore: '25'),
                 _buildSubscoreGroupSeparator(),
-                _buildSubscoreRow(
-                  label: '+ ${AppStrings.lelLabel}',
-                  value: totals.lemsLeft.toString(),
-                  maxScore: '25',
-                ),
-                _buildTotalSubscoreRow(
-                  label: AppStrings.lemsTotal,
-                  value: (totals.lemsRight + totals.lemsLeft).toString(),
-                  maxScore: '50',
-                ),
-                // ▲▲▲ FIM DA CORREÇÃO ▲▲▲
+                _buildSubscoreRow(label: '+ ${AppStrings.lelLabel}', value: totals.lowerExtremityLeft.toString(), maxScore: '25'),
+                _buildTotalSubscoreRow(label: AppStrings.lemsTotal, value: totals.lowerExtremity.toString(), maxScore: '50'),
               ],
             ),
           ),
         ),
-
-        // --- Subscores Sensoriais ---
         Card(
-          elevation: 2.0,
+          elevation: 4.0,
           margin: const EdgeInsets.only(bottom: 20.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  AppStrings.sensorySubscoresTitle,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const Divider(height: 20, thickness: 1),
-                _buildSubscoreRow(
-                  label: 'TL Direita',
-                  value: totals.rightLightTouchTotal.toString(),
-                  maxScore: '56',
-                ),
+                Text(AppStrings.sensorySubscoresTitle, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const Divider(height: 20, thickness: 1.5),
+                _buildSubscoreRow(label: 'TL Direita', value: totals.lightTouchRight.toString(), maxScore: '56'),
                 _buildSubscoreGroupSeparator(),
-                _buildSubscoreRow(
-                  label: '+ TL Esquerda',
-                  value: totals.leftLightTouchTotal.toString(),
-                  maxScore: '56',
-                ),
-                _buildTotalSubscoreRow(
-                  label: AppStrings.ltTotal,
-                  value:
-                      (totals.rightLightTouchTotal + totals.leftLightTouchTotal)
-                          .toString(),
-                  maxScore: '112',
-                ),
+                _buildSubscoreRow(label: '+ TL Esquerda', value: totals.lightTouchLeft.toString(), maxScore: '56'),
+                _buildTotalSubscoreRow(label: AppStrings.ltTotal, value: totals.lightTouch.toString(), maxScore: '112'),
                 const Divider(height: 20, thickness: 1.0),
-                _buildSubscoreRow(
-                  label: 'PP Direita',
-                  value: totals.rightPinPrickTotal.toString(),
-                  maxScore: '56',
-                ),
+                _buildSubscoreRow(label: 'PP Direita', value: totals.pinPrickRight.toString(), maxScore: '56'),
                 _buildSubscoreGroupSeparator(),
-                _buildSubscoreRow(
-                  label: '+ PP Esquerda',
-                  value: totals.leftPinPrickTotal.toString(),
-                  maxScore: '56',
-                ),
-                _buildTotalSubscoreRow(
-                  label: AppStrings.ppTotal,
-                  value: (totals.rightPinPrickTotal + totals.leftPinPrickTotal)
-                      .toString(),
-                  maxScore: '112',
-                ),
+                _buildSubscoreRow(label: '+ PP Esquerda', value: totals.pinPrickLeft.toString(), maxScore: '56'),
+                _buildTotalSubscoreRow(label: AppStrings.ppTotal, value: totals.pinPrick.toString(), maxScore: '112'),
               ],
             ),
           ),
@@ -136,34 +71,20 @@ class AsiaSubscoresSection extends StatelessWidget {
     );
   }
 
-  // MÉTODO AUXILIAR para os itens de subscore individuais (e.g., MMSS Direita)
-  // O (Máximo) (xx) sempre ficará embaixo
-  Widget _buildSubscoreRow({
-    required String label,
-    required String value,
-    required String maxScore,
-  }) {
+  Widget _buildSubscoreRow({required String label, required String value, required String maxScore}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            // Permite que o label ocupe o máximo de espaço possível
-            child: Text(label, style: const TextStyle(fontSize: 16)),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
           Column(
-            // Agora é sempre uma coluna para o valor e o máximo
-            crossAxisAlignment: CrossAxisAlignment.end, // Alinha à direita
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               _buildValueContainer(value),
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  '${AppStrings.maximumLabel} ($maxScore)',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
+                child: Text('${AppStrings.maximumLabel} ($maxScore)', style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ),
             ],
           ),
@@ -172,39 +93,20 @@ class AsiaSubscoresSection extends StatelessWidget {
     );
   }
 
-  // MÉTODO AUXILIAR para os itens de total (e.g., = Total MMSS)
-  Widget _buildTotalSubscoreRow({
-    required String label,
-    required String value,
-    required String maxScore,
-  }) {
+  Widget _buildTotalSubscoreRow({required String label, required String value, required String maxScore}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.blue))),
           Column(
-            // Sempre uma coluna para o valor e o máximo
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               _buildValueContainer(value, isTotal: true),
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  '${AppStrings.maximumLabel} ($maxScore)',
-                  style: const TextStyle(fontSize: 13, color: Colors.blueGrey),
-                ),
+                child: Text('${AppStrings.maximumLabel} ($maxScore)', style: const TextStyle(fontSize: 13, color: Colors.blueGrey)),
               ),
             ],
           ),
@@ -213,7 +115,6 @@ class AsiaSubscoresSection extends StatelessWidget {
     );
   }
 
-  // Contêiner de valor reutilizável (sem alterações significativas aqui)
   Widget _buildValueContainer(String value, {bool isTotal = false}) {
     return Container(
       width: 45,
@@ -224,31 +125,16 @@ class AsiaSubscoresSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.center,
-      child: Text(
-        value,
-        style: TextStyle(
-          fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          fontSize: 17,
-          color: isTotal ? Colors.blue.shade800 : Colors.black87,
-        ),
-      ),
+      child: Text(value, style: TextStyle(fontWeight: isTotal ? FontWeight.bold : FontWeight.normal, fontSize: 17, color: isTotal ? Colors.blue.shade800 : Colors.black87)),
     );
   }
 
-  // Separador para agrupar as somas (sem alterações significativas aqui)
   Widget _buildSubscoreGroupSeparator() {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 16.0),
       child: Align(
         alignment: Alignment.centerRight,
-        child: Text(
-          '+',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey,
-          ),
-        ),
+        child: Text('+', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
       ),
     );
   }

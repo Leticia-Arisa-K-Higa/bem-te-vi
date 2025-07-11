@@ -159,7 +159,14 @@ class AsiaMotorSensoryTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final neurologyProvider = Provider.of<AsiaFormProvider>(context);
-    final totals = neurologyProvider.totals;
+    final result = neurologyProvider.result;
+
+    // Se o resultado ainda não foi calculado, mostramos os totais como '0' ou 'N/A'
+    final rightLT = result?.totals.lightTouchRight.toString() ?? '0';
+    final rightPP = result?.totals.pinPrickRight.toString() ?? '0';
+    final leftLT = result?.totals.lightTouchLeft.toString() ?? '0';
+    final leftPP = result?.totals.pinPrickLeft.toString() ?? '0';
+    final leftMotor = result?.totals.leftMotor.toString() ?? '0';
 
     return Table(
       border: TableBorder.all(color: Colors.grey.shade300),
@@ -330,92 +337,39 @@ class AsiaMotorSensoryTable extends StatelessWidget {
 
         // Rodapé da Tabela (Totais) (mantidos como antes)
         TableRow(
+          decoration: BoxDecoration(color: Colors.grey.shade100),
           children: side == Side.right
               ? [
-                  TableCell(child: Container()),
-                  TableCell(child: Container()),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        AppStrings.totalsLabelRight,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        totals.rightLightTouchTotal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        totals.rightPinPrickTotal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  const TableCell(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Total Direita', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
+                  const TableCell(child: Text('')),
+                  const TableCell(child: Text('')), // Motor total é calculado separadamente
+                  TableCell(child: Center(child: Text(rightLT, style: const TextStyle(fontWeight: FontWeight.bold)))),
+                  TableCell(child: Center(child: Text(rightPP, style: const TextStyle(fontWeight: FontWeight.bold)))),
                 ]
               : [
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        totals.leftLightTouchTotal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        totals.leftPinPrickTotal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        totals.leftMotorTotal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text(
-                        AppStrings.totalsLabelLeft,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  TableCell(child: Container()),
+                  TableCell(child: Center(child: Text(leftLT, style: const TextStyle(fontWeight: FontWeight.bold)))),
+                  TableCell(child: Center(child: Text(leftPP, style: const TextStyle(fontWeight: FontWeight.bold)))),
+                  TableCell(child: Center(child: Text(leftMotor, style: const TextStyle(fontWeight: FontWeight.bold)))),
+                  const TableCell(child: Text('')),
+                  const TableCell(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Total Esquerda', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
                 ],
         ),
-        TableRow(
-          children: side == Side.right
-              ? [
-                  TableCell(child: Container()),
-                  TableCell(child: Container()),
-                  TableCell(
-                    child: Center(child: Text(AppStrings.maximumLabel)),
-                  ),
-                  TableCell(child: Center(child: Text('(56)'))),
-                  TableCell(child: Center(child: Text('(56)'))),
-                ]
-              : [
-                  TableCell(child: Center(child: Text('(56)'))),
-                  TableCell(child: Center(child: Text('(56)'))),
-                  TableCell(child: Center(child: Text('(50)'))),
-                  TableCell(
-                    child: Center(child: Text(AppStrings.maximumLabel)),
-                  ),
-                  TableCell(child: Container()),
-                ],
-        ),
+         TableRow(
+          decoration: BoxDecoration(color: Colors.grey.shade100),
+          children: side == Side.right ? [
+            const TableCell(child: Text('')),
+            const TableCell(child: Text('')),
+            const TableCell(child: Center(child: Text('(Máx: 50)'))),
+            const TableCell(child: Center(child: Text('(Máx: 56)'))),
+            const TableCell(child: Center(child: Text('(Máx: 56)'))),
+          ] : [
+            const TableCell(child: Center(child: Text('(Máx: 56)'))),
+            const TableCell(child: Center(child: Text('(Máx: 56)'))),
+            const TableCell(child: Center(child: Text('(Máx: 50)'))),
+            const TableCell(child: Text('')),
+            const TableCell(child: Text('')),
+          ]
+        )
       ],
     );
   }
