@@ -11,7 +11,8 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
+            // Cor adaptada para o tema verde esmeralda
+            decoration: BoxDecoration(color: AppStrings.emeraldGreen),
             child: Text(
               AppStrings.drawerHeader,
               style: TextStyle(color: Colors.white, fontSize: 24),
@@ -21,29 +22,25 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text(AppStrings.homeDrawerItem),
             onTap: () {
-              Navigator.pop(context); // Fecha o drawer
-              Navigator.pushReplacementNamed(
-                context,
-                '/',
-              ); // Volta para a tela inicial
+              Navigator.pop(context);
+              if (ModalRoute.of(context)?.settings.name != '/') {
+                Navigator.pushReplacementNamed(context, '/');
+              }
             },
           ),
           ListTile(
             leading: const Icon(Icons.description),
             title: const Text(AppStrings.asiaFormDrawerItem),
             onTap: () {
-              Navigator.pop(context); // Fecha o drawer
-              Navigator.pushNamed(
-                context,
-                '/asia_form',
-              ); // Navega para o formulário ASIA
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/asia_form');
             },
           ),
           ListTile(
             leading: const Icon(Icons.more_horiz),
             title: const Text(AppStrings.otherFormsDrawerItem),
             onTap: () {
-              Navigator.pop(context); // Fecha o drawer
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Outros formulários em desenvolvimento!'),

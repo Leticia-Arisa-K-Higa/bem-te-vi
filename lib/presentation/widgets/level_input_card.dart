@@ -1,13 +1,7 @@
-// lib/presentation/widgets/level_input_card.dart
 import 'package:bem_te_vi/core/constants/app_strings.dart';
 import 'package:bem_te_vi/core/models/neurology_cell_data.dart';
 import 'package:bem_te_vi/presentation/widgets/interactive_asia_cell.dart';
 import 'package:flutter/material.dart';
-
-// Ensure the IterableExtension is defined or imported,
-// for firstWhereOrNull to be available.
-// If you put it at the very bottom of this file, that's fine.
-// Or if you have a central 'extensions.dart' file, import it.
 
 class LevelInputCard extends StatefulWidget {
   final String level;
@@ -28,11 +22,8 @@ class LevelInputCard extends StatefulWidget {
 class _LevelInputCardState extends State<LevelInputCard> {
   bool _isExpanded = false;
 
-  // Helper para encontrar uma célula específica neste nível
-  // *** CORREÇÃO AQUI: Use firstWhereOrNull ***
   NeurologyCellData? _getCell(CellType type, Side side) {
     return widget.levelCells.firstWhereOrNull(
-      // <--- THIS IS THE CHANGE
       (c) => c.type == type && c.side == side,
     );
   }
@@ -41,7 +32,6 @@ class _LevelInputCardState extends State<LevelInputCard> {
   Widget build(BuildContext context) {
     final hasMotor = AppStrings.motorLevels.contains(widget.level);
 
-    // Obtenha as células para este nível e lado, lidando com nulos
     final NeurologyCellData? rightMotorCell = _getCell(
       CellType.motor,
       Side.right,
@@ -96,7 +86,6 @@ class _LevelInputCardState extends State<LevelInputCard> {
             ),
             child: Column(
               children: [
-                // Headers para as colunas de dados
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
@@ -139,7 +128,6 @@ class _LevelInputCardState extends State<LevelInputCard> {
                 ),
                 const Divider(),
 
-                // Linha para o Lado Direito
                 Row(
                   children: [
                     const Expanded(
@@ -149,7 +137,7 @@ class _LevelInputCardState extends State<LevelInputCard> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    if (hasMotor) // Only show motor if the level has a motor component
+                    if (hasMotor)
                       Expanded(
                         flex: 3,
                         child: rightMotorCell != null
@@ -157,7 +145,7 @@ class _LevelInputCardState extends State<LevelInputCard> {
                                 cellData: rightMotorCell,
                                 onCellValueChanged: widget.onCellValueChanged,
                               )
-                            : Container(), // Placeholder if no motor cell for this level/side
+                            : Container(),
                       ),
                     Expanded(
                       flex: 3,
@@ -180,8 +168,6 @@ class _LevelInputCardState extends State<LevelInputCard> {
                   ],
                 ),
                 const Divider(),
-
-                // Linha para o Lado Esquerdo
                 Row(
                   children: [
                     const Expanded(
@@ -191,7 +177,7 @@ class _LevelInputCardState extends State<LevelInputCard> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    if (hasMotor) // Only show motor if the level has a motor component
+                    if (hasMotor)
                       Expanded(
                         flex: 3,
                         child: leftMotorCell != null
@@ -230,8 +216,6 @@ class _LevelInputCardState extends State<LevelInputCard> {
   }
 }
 
-// Ensure this extension is available. If it's in a central file, remove it from here.
-// Otherwise, keep it here.
 extension IterableExtension<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T element) test) {
     for (var element in this) {

@@ -1,9 +1,7 @@
-// lib/presentation/screens/asia_form_screen.dart
-
 import 'package:bem_te_vi/core/constants/app_strings.dart';
 import 'package:bem_te_vi/core/providers/asia_form_provider.dart';
 import 'package:bem_te_vi/presentation/common_widgets/app_drawer.dart';
-import 'package:bem_te_vi/presentation/common_widgets/custom_text_field.dart'; // Import necessário para CustomTextField
+import 'package:bem_te_vi/presentation/common_widgets/custom_text_field.dart';
 import 'package:bem_te_vi/presentation/widgets/asia_lateral_totals_section.dart';
 import 'package:bem_te_vi/presentation/widgets/asia_subscores_section.dart';
 import 'package:bem_te_vi/presentation/widgets/asia_totals_section.dart';
@@ -13,6 +11,66 @@ import 'package:provider/provider.dart';
 
 class AsiaFormScreen extends StatelessWidget {
   const AsiaFormScreen({super.key});
+
+  void _showDiagramsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Diagramas de Referência ASIA'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildImageWithLabel(
+                  context: context,
+                  imagePath: 'assets/images/asia-man.png',
+                  label: 'Corpo Completo',
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                const SizedBox(height: 15),
+                _buildImageWithLabel(
+                  context: context,
+                  imagePath: 'assets/images/asia-legend.png',
+                  label: 'Legenda dos Valores',
+                  maxHeight: MediaQuery.of(context).size.height * 0.15,
+                ),
+                const SizedBox(height: 15),
+                _buildImageWithLabel(
+                  context: context,
+                  imagePath: 'assets/images/asia-hands.png',
+                  label: 'Detalhe das Mãos',
+                  maxHeight: MediaQuery.of(context).size.height * 0.25,
+                ),
+                const SizedBox(height: 15),
+                _buildImageWithLabel(
+                  context: context,
+                  imagePath: 'assets/images/asia-sacral.png',
+                  label: 'Detalhe da Região Sacral',
+                  maxHeight: MediaQuery.of(context).size.height * 0.3,
+                ),
+                const SizedBox(height: 15),
+                _buildImageWithLabel(
+                  context: context,
+                  imagePath: 'assets/images/asia-head.png',
+                  label: 'Detalhe da Cabeça e Pescoço',
+                  maxHeight: MediaQuery.of(context).size.height * 0.2,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Fechar'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +84,11 @@ class AsiaFormScreen extends StatelessWidget {
             icon: const Icon(Icons.clear),
             tooltip: 'Limpar Formulário',
             onPressed: () => asiaProvider.clearForm(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.image_outlined),
+            tooltip: 'Ver Diagramas de Referência',
+            onPressed: () => _showDiagramsDialog(context),
           ),
           IconButton(
             icon: const Icon(Icons.save),
@@ -43,117 +106,45 @@ class AsiaFormScreen extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Seção de Diagramas (Imagens Responsivas)
-            _buildDiagramSection(context),
-            const SizedBox(height: 20),
-
-            // Seção de Níveis Neurológicos (Lista Expansível)
-            _buildLevelInputCards(context, asiaProvider),
-            const SizedBox(height: 20),
-
-            // Músculos Não-Chave com Função Motora
-            _buildLowestNonKeyMuscles(
-              context,
-              asiaProvider,
-            ), // Passando context
-            const SizedBox(height: 20),
-
-            // Comentários
-            _buildComments(context, asiaProvider), // Passando context
-            const SizedBox(height: 20),
-
-            // Seletores de Sensação Anal
-            _buildAnalSensationSelectors(asiaProvider),
-            const SizedBox(height: 20),
-
-            // Seção de Totais Laterais (Motor e Sensorial p/ Lado)
-            AsiaLateralTotalsSection(totals: asiaProvider.totals),
-            const SizedBox(height: 20),
-
-            // Subscores Motores e Sensoriais
-            AsiaSubscoresSection(totals: asiaProvider.totals),
-            const SizedBox(height: 20),
-
-            // Totais Finais ASIA
-            AsiaTotalsSection(totals: asiaProvider.totals),
-            const SizedBox(height: 20),
-          ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppStrings.emeraldGreen, Color(0xFF4DB6AC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildLevelInputCards(context, asiaProvider),
+              const SizedBox(height: 20),
+              _buildLowestNonKeyMuscles(context, asiaProvider),
+              const SizedBox(height: 20),
+              _buildComments(context, asiaProvider),
+              const SizedBox(height: 20),
+              _buildAnalSensationSelectors(context, asiaProvider),
+              const SizedBox(height: 20),
+              AsiaLateralTotalsSection(totals: asiaProvider.totals),
+              const SizedBox(height: 20),
+              AsiaSubscoresSection(totals: asiaProvider.totals),
+              const SizedBox(height: 20),
+              AsiaTotalsSection(totals: asiaProvider.totals),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // --- MÉTODOS AUXILIARES DA CLASSE AsiaFormScreen ---
-
-  // Método para construir a seção de diagramas (imagens responsivas)
-  Widget _buildDiagramSection(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Diagramas de Referência ASIA',
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 10),
-
-        _buildImageWithLabel(
-          context: context,
-          imagePath: 'assets/images/asia-man.png',
-          label: 'Corpo Completo',
-          maxHeight:
-              screenHeight * 0.7, // Ajuste a proporção conforme necessário
-        ),
-        const SizedBox(height: 15),
-
-        _buildImageWithLabel(
-          context: context,
-          imagePath: 'assets/images/asia-legend.png',
-          label: 'Legenda dos Valores',
-          maxHeight: screenHeight * 0.15,
-        ),
-        const SizedBox(height: 15),
-
-        _buildImageWithLabel(
-          context: context,
-          imagePath: 'assets/images/asia-hands.png',
-          label: 'Detalhe das Mãos',
-          maxHeight: screenHeight * 0.25,
-        ),
-        const SizedBox(height: 15),
-
-        _buildImageWithLabel(
-          context: context,
-          imagePath: 'assets/images/asia-sacral.png',
-          label: 'Detalhe da Região Sacral',
-          maxHeight: screenHeight * 0.3,
-        ),
-        const SizedBox(height: 15),
-
-        _buildImageWithLabel(
-          context: context,
-          imagePath:
-              'assets/images/asia-head.png', // Verifique a extensão se for JPG
-          label: 'Detalhe da Cabeça e Pescoço',
-          maxHeight: screenHeight * 0.2,
-        ),
-      ],
-    );
-  }
-
-  // Método auxiliar para criar cada imagem com label, zoom e responsividade
   Widget _buildImageWithLabel({
     required BuildContext context,
     required String imagePath,
     required String label,
-    double maxHeight = 200, // Altura máxima padrão
+    double maxHeight = 200,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,7 +180,6 @@ class AsiaFormScreen extends StatelessWidget {
     );
   }
 
-  // Método para construir a lista de cartões de entrada de níveis neurológicos
   Widget _buildLevelInputCards(
     BuildContext context,
     AsiaFormProvider provider,
@@ -219,45 +209,62 @@ class AsiaFormScreen extends StatelessWidget {
     );
   }
 
-  // Método para construir os seletores de sensação anal
-  Widget _buildAnalSensationSelectors(AsiaFormProvider provider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        DropdownButtonFormField<String>(
-          value: provider.voluntaryAnalContraction,
-          decoration: const InputDecoration(
-            labelText: AppStrings.vacLabel,
-            border: OutlineInputBorder(),
-          ),
-          onChanged: provider.setVoluntaryAnalContraction,
-          items: AppStrings.analSensationOptions
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-              .toList(),
+  Widget _buildAnalSensationSelectors(
+    BuildContext context,
+    AsiaFormProvider provider,
+  ) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Sensibilidade Anal',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: provider.voluntaryAnalContraction,
+              decoration: const InputDecoration(
+                labelText: AppStrings.vacLabel,
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              onChanged: provider.setVoluntaryAnalContraction,
+              items: AppStrings.analSensationOptions
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: provider.deepAnalPressure,
+              decoration: const InputDecoration(
+                labelText: AppStrings.dapLabel,
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              onChanged: provider.setDeepAnalPressure,
+              items: AppStrings.analSensationOptions
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: provider.deepAnalPressure,
-          decoration: const InputDecoration(
-            labelText: AppStrings.dapLabel,
-            border: OutlineInputBorder(),
-          ),
-          onChanged: provider.setDeepAnalPressure,
-          items: AppStrings.analSensationOptions
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-              .toList(),
-        ),
-      ],
+      ),
     );
   }
 
-  // Método para construir a seção de músculos não-chave
   Widget _buildLowestNonKeyMuscles(
     BuildContext context,
     AsiaFormProvider provider,
   ) {
-    // Para tornar as opções responsivas, podemos envolver o Text em FittedBox
-    // ou simplesmente permitir que o Text use seu softWrap.
     final List<DropdownMenuItem<String>> muscleOptions = AppStrings
         .lowestNonKeyMuscleOptions
         .entries
@@ -266,95 +273,106 @@ class AsiaFormScreen extends StatelessWidget {
             value: entry.key,
             child: Text(
               entry.value,
-              // Adicionando um estilo que permite o texto quebrar linha, se necessário.
-              // Em um DropdownMenuItem, o Text geralmente tenta ser uma linha única.
-              // Para dropdowns, isExpanded costuma ser a solução principal.
-              overflow: TextOverflow
-                  .ellipsis, // Corta o texto com '...' se for muito longo
-              maxLines: 1, // Exibe no máximo uma linha
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
         )
         .toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Lowest non-key muscles with motor function:',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment
-              .center, // Alinha verticalmente os itens da linha
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Expanded(
-              flex:
-                  2, // Reduz a flexibilidade do label para dar mais espaço ao dropdown
-              child: Text('Right:', style: TextStyle(fontSize: 16)),
+            Text(
+              'Músculo não-chave mais baixo com função motora:',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Expanded(
-              flex:
-                  5, // Aumenta a flexibilidade do dropdown para que ocupe mais espaço
-              child: DropdownButtonFormField<String>(
-                value: provider.rightLowestNonKeyMuscle,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                onChanged: provider.setRightLowestNonKeyMuscle,
-                items: muscleOptions,
-                isExpanded:
-                    true, // <--- MUITO IMPORTANTE: Faz o dropdown ocupar a largura disponível
-                // Isso resolve muitos problemas de overflow em dropdowns
-              ),
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Expanded(
+                  flex: 2,
+                  child: Text('Right:', style: TextStyle(fontSize: 16)),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: DropdownButtonFormField<String>(
+                    value: provider.rightLowestNonKeyMuscle,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    onChanged: provider.setRightLowestNonKeyMuscle,
+                    items: muscleOptions,
+                    isExpanded: true,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Expanded(
+                  flex: 2,
+                  child: Text('Left:', style: TextStyle(fontSize: 16)),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: DropdownButtonFormField<String>(
+                    value: provider.leftLowestNonKeyMuscle,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    onChanged: provider.setLeftLowestNonKeyMuscle,
+                    items: muscleOptions,
+                    isExpanded: true,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment
-              .center, // Alinha verticalmente os itens da linha
-          children: [
-            const Expanded(
-              flex: 2, // Reduz a flexibilidade do label
-              child: Text('Left:', style: TextStyle(fontSize: 16)),
-            ),
-            Expanded(
-              flex: 5, // Aumenta a flexibilidade do dropdown
-              child: DropdownButtonFormField<String>(
-                value: provider.leftLowestNonKeyMuscle,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                onChanged: provider.setLeftLowestNonKeyMuscle,
-                items: muscleOptions,
-                isExpanded: true, // <--- MUITO IMPORTANTE
-              ),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 
-  // Método para construir a seção de comentários
   Widget _buildComments(BuildContext context, AsiaFormProvider provider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Comments:',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Comentários:',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            CustomTextField(
+              labelText: 'Digite seus comentários aqui...',
+              initialValue: provider.comments,
+              onChanged: provider.setComments,
+              maxLines: 5,
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        CustomTextField(
-          labelText: 'Digite seus comentários aqui...',
-          initialValue: provider.comments,
-          onChanged: provider.setComments,
-          maxLines: 5,
-        ),
-      ],
+      ),
     );
   }
 }

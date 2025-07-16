@@ -1,22 +1,27 @@
 // lib/core/constants/app_strings.dart
 
+import 'dart:ui';
+
 class AppStrings {
   static const String appTitle = 'ISNCSCI App';
 
   // Home Screen
-  static const String homeTitle = 'Formulário Principal';
+  static const String homeTitle = 'Informações Iniciais';
   static const String patientNameLabel = 'Nome do Paciente';
   static const String examinerNameLabel = 'Nome do Examinador';
   static const String examDateLabel = 'Data do Exame';
   static const String saveAndContinueButton = 'Salvar e Continuar';
   static const String pleaseFillFields = 'Por favor, preencha todos os campos.';
 
+  // Colors
+  static const Color emeraldGreen = Color(0xFF049F7A);
+  static const Color lightBackground = Color(0xFFF8F9FA);
+
   // Drawer
-  static const String drawerHeader = 'Navegação';
-  static const String homeDrawerItem = 'Início';
-  static const String asiaFormDrawerItem = 'Formulário ASIA';
-  static const String otherFormsDrawerItem =
-      'Outros Formulários'; // Placeholder
+  static const String drawerHeader = 'Formulários';
+  static const String homeDrawerItem = 'Informações Iniciais';
+  static const String asiaFormDrawerItem = 'ASIA';
+  static const String otherFormsDrawerItem = 'Outros Formulários';
 
   // ASIA Form Screen
   static const String asiaFormTitle = 'Classificação ISNCSCI (ASIA)';
@@ -25,13 +30,11 @@ class AppStrings {
   static const String keyMusclesLabel = 'Músculos-chave';
   static const String keySensoryPointsLabel = 'Pontos Sensoriais-chave';
   static const String lightTouchLabel = 'Toque Leve (TL)';
-  static const String pinPrickLabel = 'Picada (P P)';
+  static const String pinPrickLabel = 'Picada (PP)';
   static const String rightSideLabel = 'Direita';
   static const String leftSideLabel = 'Esquerda';
-  static const String totalsLabelRight =
-      'DIREITA TOTAIS'; // Atualizado para o seu request
-  static const String totalsLabelLeft =
-      'ESQUERDA TOTAIS'; // Atualizado para o seu request
+  static const String totalsLabelRight = 'DIREITA TOTAIS';
+  static const String totalsLabelLeft = 'ESQUERDA TOTAIS';
   static const String maximumLabel = '(Máximo)';
   static const String vacLabel = '(VAC) Contração Anal Voluntária';
   static const String dapLabel = '(DAP) Pressão Anal Profunda';
@@ -124,9 +127,8 @@ class AppStrings {
 
   static const List<String> analSensationOptions = [vacYes, vacNo, vacNt];
 
-  // --- A CONSTANTE 'lowestNonKeyMuscleOptions' QUE ESTAVA FALTANDO ---
   static const Map<String, String> lowestNonKeyMuscleOptions = {
-    '0': 'Nenhum', // Adicione 'Nenhum' como primeira opção ou ajuste
+    '0': 'Nenhum',
     '4':
         'C5 - Ombro: Flexão, extensão, abdução, adução, rotação interna e externa - Cotovelo: Supinação',
     '5': 'C6 - Cotovelo: Pronação - Punho: Flexão',

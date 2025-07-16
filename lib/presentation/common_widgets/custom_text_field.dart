@@ -1,8 +1,6 @@
-// lib/presentation/common_widgets/custom_text_field.dart
-
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String labelText;
   final TextEditingController? controller;
   final String? initialValue;
@@ -10,7 +8,7 @@ class CustomTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final TextInputType? keyboardType;
-  final int? maxLines; // <--- ADICIONE ESTA PROPRIEDADE
+  final int? maxLines;
 
   const CustomTextField({
     super.key,
@@ -21,35 +19,44 @@ class CustomTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.keyboardType,
-    this.maxLines = 1, // <--- E INICIALIZE COM UM VALOR PADRÃO (geralmente 1)
+    this.maxLines = 1,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController? effectiveController =
-        controller ??
-        (initialValue != null
-            ? TextEditingController(text: initialValue)
-            : null);
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: effectiveController,
-        readOnly: readOnly,
-        onTap: onTap,
-        onChanged: onChanged,
-        keyboardType: keyboardType,
-        maxLines: maxLines, // <--- PASSE A PROPRIEDADE AQUI
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10,
-          ),
-        ),
-      ),
+class _CustomTextFieldState extends State<CustomTextField> {
+  late final TextEditingController _internalController;
+
+  @override
+  void initState() {
+    super.initState();
+    _internalController =
+        widget.controller ??
+        TextEditingController(text: widget.initialValue ?? '');
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _internalController.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _internalController,
+      readOnly: widget.readOnly,
+      onTap: widget.onTap,
+      onChanged: widget.onChanged,
+      keyboardType: widget.keyboardType,
+      maxLines: widget.maxLines,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.left,
+      decoration: InputDecoration(labelText: widget.labelText),
     );
   }
 }
