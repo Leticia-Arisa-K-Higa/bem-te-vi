@@ -5,6 +5,8 @@ import 'package:bem_te_vi/presentation/common_widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:bem_te_vi/core/database/app_database.dart';
+import 'package:drift/drift.dart' as drift;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -129,8 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (patientNameController.text.isEmpty ||
+                            examinerNameController.text.isEmpty ||
                             examinerNameController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -138,8 +141,41 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         } else {
-                          patientProvider.savePatientData();
-                          Navigator.pushNamed(context, '/asia_form');
+                          final database = context.read<AppDatabase>();
+                          final patientProvider = context
+                              .read<PatientFormProvider>();
+
+                          final patientCompanion = PatientsCompanion(
+                            patientName: drift.Value(
+                              patientProvider.patientData.patientName,
+                            ),
+                            examinerName: drift.Value(
+                              patientProvider.patientData.patientName,
+                            ),
+                            examDate: drift.Value(
+                              patientProvider.patientData.examDate,
+                            ),
+                          );
+
+                          try {
+                            final newPatientId = await database
+                                .into(database.patients)
+                                .insert(patientCompanion);
+
+                            if (mounted) {
+                              Navigator.pushNamed(
+                                context,
+                                '/asia_form',
+                                arguments: newPatientId,
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Erro ao salvar paciente: $e'),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text(AppStrings.saveAndContinueButton),

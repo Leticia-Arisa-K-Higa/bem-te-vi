@@ -1,30 +1,26 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// test/widget_test.dart
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:bem_te_vi/main.dart';
+import 'package:bem_te_vi/core/constants/app_strings.dart';
+import 'package:bem_te_vi/core/database/app_database.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('HomeScreen loads and displays initial information', (
+    WidgetTester tester,
+  ) async {
+    // This is a "mock" or fake version of your database for the test.
+    final AppDatabase mockDatabase = AppDatabase();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Build the app and trigger a frame.
+    // We pass the mock database just like in your real main.dart
+    await tester.pumpWidget(MyApp(database: mockDatabase));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the title of the HomeScreen is displayed.
+    expect(find.text(AppStrings.homeTitle), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // You can also verify that the input fields are present.
+    expect(find.text(AppStrings.patientNameLabel), findsOneWidget);
+    expect(find.text(AppStrings.examinerNameLabel), findsOneWidget);
   });
 }

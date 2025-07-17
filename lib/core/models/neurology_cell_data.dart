@@ -64,6 +64,42 @@ class NeurologyCellData {
     );
   }
 
+  // ▼▼▼ CÓDIGO A SER ADICIONADO ▼▼▼
+
+  /// Converte a instância da classe em um Map<String, dynamic>.
+  /// Este método é essencial para o `jsonEncode` funcionar e converter o objeto
+  /// em uma string JSON para ser salva no banco de dados.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'value': value,
+      // Convertemos o enum para uma string para que ele possa ser armazenado como texto.
+      'type': type.toString(),
+      'side': side.toString(),
+      'level': level,
+      'helperText': helperText,
+      'title': title,
+    };
+  }
+
+  /// Cria uma instância de [NeurologyCellData] a partir de um Map<String, dynamic>.
+  /// Este é um "factory constructor" usado para reconstruir o objeto quando
+  /// lemos os dados JSON do banco de dados.
+  factory NeurologyCellData.fromJson(Map<String, dynamic> json) {
+    return NeurologyCellData(
+      id: json['id'],
+      value: json['value'],
+      // Aqui, fazemos o processo inverso: convertemos a string de volta para o enum.
+      type: CellType.values.firstWhere((e) => e.toString() == json['type']),
+      side: Side.values.firstWhere((e) => e.toString() == json['side']),
+      level: json['level'],
+      helperText: json['helperText'],
+      title: json['title'],
+    );
+  }
+
+  // ▲▲▲ FIM DO CÓDIGO A SER ADICIONADO ▲▲▲
+
   // Opcional: Sobrescrever toString para melhor depuração
   @override
   String toString() {

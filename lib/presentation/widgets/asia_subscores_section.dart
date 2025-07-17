@@ -15,7 +15,7 @@ class AsiaSubscoresSection extends StatelessWidget {
       children: [
         // --- Subscores Motores ---
         Card(
-          elevation: 4.0,
+          elevation: 2.0,
           margin: const EdgeInsets.only(bottom: 20.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
@@ -27,53 +27,47 @@ class AsiaSubscoresSection extends StatelessWidget {
               children: [
                 Text(
                   AppStrings.motorSubscoresTitle,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const Divider(height: 20, thickness: 1.5),
+                const Divider(height: 20, thickness: 1),
 
+                // ▼▼▼ CÓDIGO CORRIGIDO ▼▼▼
                 _buildSubscoreRow(
-                  // Usando o novo método para linhas
                   label: AppStrings.uerLabel,
-                  value: totals.rightMotorTotal.toString(),
+                  value: totals.uemsRight.toString(),
                   maxScore: '25',
                 ),
                 _buildSubscoreGroupSeparator(),
                 _buildSubscoreRow(
                   label: '+ ${AppStrings.uelLabel}',
-                  value: totals.leftMotorTotal.toString(),
+                  value: totals.uemsLeft.toString(),
                   maxScore: '25',
                 ),
                 _buildTotalSubscoreRow(
-                  // Usando o novo método para totais
                   label: AppStrings.uemsTotal,
-                  value: (totals.rightMotorTotal + totals.leftMotorTotal)
-                      .toString(),
+                  value: (totals.uemsRight + totals.uemsLeft).toString(),
                   maxScore: '50',
                 ),
-
                 const Divider(height: 20, thickness: 1.0),
-
                 _buildSubscoreRow(
                   label: AppStrings.lerLabel,
-                  value: totals.rightMotorTotal
-                      .toString(), // Mudar para totals.rightLowerMotorTotal quando implementado
+                  value: totals.lemsRight.toString(),
                   maxScore: '25',
                 ),
                 _buildSubscoreGroupSeparator(),
                 _buildSubscoreRow(
                   label: '+ ${AppStrings.lelLabel}',
-                  value: totals.leftMotorTotal
-                      .toString(), // Mudar para totals.leftLowerMotorTotal quando implementado
+                  value: totals.lemsLeft.toString(),
                   maxScore: '25',
                 ),
                 _buildTotalSubscoreRow(
                   label: AppStrings.lemsTotal,
-                  value: (totals.rightMotorTotal + totals.leftMotorTotal)
-                      .toString(), // Mudar para totais corretos
+                  value: (totals.lemsRight + totals.lemsLeft).toString(),
                   maxScore: '50',
                 ),
+                // ▲▲▲ FIM DA CORREÇÃO ▲▲▲
               ],
             ),
           ),
@@ -81,7 +75,7 @@ class AsiaSubscoresSection extends StatelessWidget {
 
         // --- Subscores Sensoriais ---
         Card(
-          elevation: 4.0,
+          elevation: 2.0,
           margin: const EdgeInsets.only(bottom: 20.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
@@ -93,12 +87,11 @@ class AsiaSubscoresSection extends StatelessWidget {
               children: [
                 Text(
                   AppStrings.sensorySubscoresTitle,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const Divider(height: 20, thickness: 1.5),
-
+                const Divider(height: 20, thickness: 1),
                 _buildSubscoreRow(
                   label: 'TL Direita',
                   value: totals.rightLightTouchTotal.toString(),
@@ -117,9 +110,7 @@ class AsiaSubscoresSection extends StatelessWidget {
                           .toString(),
                   maxScore: '112',
                 ),
-
                 const Divider(height: 20, thickness: 1.0),
-
                 _buildSubscoreRow(
                   label: 'PP Direita',
                   value: totals.rightPinPrickTotal.toString(),

@@ -2,15 +2,23 @@
 
 /// Representa os resultados totais e a classificação final do exame ISNCSCI (ASIA).
 class TotalsData {
-  // Totais de Escores Motores
-  final int rightMotorTotal;
-  final int leftMotorTotal;
-
   // Totais de Escores Sensoriais (Toque Leve e Picada)
   final int rightLightTouchTotal;
   final int leftLightTouchTotal;
   final int rightPinPrickTotal;
   final int leftPinPrickTotal;
+
+  // ▼▼▼ CAMPOS ATUALIZADOS E ADICIONADOS ▼▼▼
+  // Subscores Motores (MMSS e MMII)
+  final int uemsRight; // Upper Extremity Motor Score - Direita (C5-T1)
+  final int uemsLeft; // Upper Extremity Motor Score - Esquerda (C5-T1)
+  final int lemsRight; // Lower Extremity Motor Score - Direita (L2-S1)
+  final int lemsLeft; // Lower Extremity Motor Score - Esquerda (L2-S1)
+
+  // Totais Motores (soma dos subscores)
+  int get rightMotorTotal => uemsRight + lemsRight;
+  int get leftMotorTotal => uemsLeft + lemsLeft;
+  // ▲▲▲ FIM DAS MUDANÇAS ▲▲▲
 
   // Classificações e Níveis Finais
   final String neurologicalLevelOfInjury; // Nível Neurológico da Lesão (NNL)
@@ -18,23 +26,21 @@ class TotalsData {
   final String asiaImpairmentScale; // Escala de Deficiência ASIA (EDA)
 
   // Zonas de Preservação Parcial (ZPP)
-  final String rightSensoryZpp; // ZPP Sensorial Direita
-  final String leftSensoryZpp; // ZPP Sensorial Esquerda
-  final String rightMotorZpp; // ZPP Motora Direita
-  final String leftMotorZpp; // ZPP Motora Esquerda
+  final String rightSensoryZpp;
+  final String leftSensoryZpp;
+  final String rightMotorZpp;
+  final String leftMotorZpp;
 
-  /// Construtor para criar uma instância de [TotalsData].
-  /// Todos os campos são inicializados com valores padrão (0 ou 'N/A')
-  /// para garantir que sempre haja um estado válido.
   TotalsData({
-    this.rightMotorTotal = 0,
-    this.leftMotorTotal = 0,
     this.rightLightTouchTotal = 0,
     this.leftLightTouchTotal = 0,
     this.rightPinPrickTotal = 0,
     this.leftPinPrickTotal = 0,
-    this.neurologicalLevelOfInjury =
-        'N/A', // Não Aplicável ou ainda não calculado
+    this.uemsRight = 0,
+    this.uemsLeft = 0,
+    this.lemsRight = 0,
+    this.lemsLeft = 0,
+    this.neurologicalLevelOfInjury = 'N/A',
     this.completeness = 'N/A',
     this.asiaImpairmentScale = 'N/A',
     this.rightSensoryZpp = 'N/A',
@@ -43,16 +49,15 @@ class TotalsData {
     this.leftMotorZpp = 'N/A',
   });
 
-  /// Cria uma nova instância de [TotalsData] com valores copiados da
-  /// instância atual, permitindo a modificação de campos específicos.
-  /// Isso é útil para atualizações de estado imutáveis no `Provider`.
   TotalsData copyWith({
-    int? rightMotorTotal,
-    int? leftMotorTotal,
     int? rightLightTouchTotal,
     int? leftLightTouchTotal,
     int? rightPinPrickTotal,
     int? leftPinPrickTotal,
+    int? uemsRight,
+    int? uemsLeft,
+    int? lemsRight,
+    int? lemsLeft,
     String? neurologicalLevelOfInjury,
     String? completeness,
     String? asiaImpairmentScale,
@@ -62,12 +67,14 @@ class TotalsData {
     String? leftMotorZpp,
   }) {
     return TotalsData(
-      rightMotorTotal: rightMotorTotal ?? this.rightMotorTotal,
-      leftMotorTotal: leftMotorTotal ?? this.leftMotorTotal,
       rightLightTouchTotal: rightLightTouchTotal ?? this.rightLightTouchTotal,
       leftLightTouchTotal: leftLightTouchTotal ?? this.leftLightTouchTotal,
       rightPinPrickTotal: rightPinPrickTotal ?? this.rightPinPrickTotal,
       leftPinPrickTotal: leftPinPrickTotal ?? this.leftPinPrickTotal,
+      uemsRight: uemsRight ?? this.uemsRight,
+      uemsLeft: uemsLeft ?? this.uemsLeft,
+      lemsRight: lemsRight ?? this.lemsRight,
+      lemsLeft: lemsLeft ?? this.lemsLeft,
       neurologicalLevelOfInjury:
           neurologicalLevelOfInjury ?? this.neurologicalLevelOfInjury,
       completeness: completeness ?? this.completeness,
@@ -77,11 +84,5 @@ class TotalsData {
       rightMotorZpp: rightMotorZpp ?? this.rightMotorZpp,
       leftMotorZpp: leftMotorZpp ?? this.leftMotorZpp,
     );
-  }
-
-  // Opcional: Sobrescrever toString para melhor depuração
-  @override
-  String toString() {
-    return 'TotalsData(rightMotor: $rightMotorTotal, leftMotor: $leftMotorTotal, NLI: $neurologicalLevelOfInjury, AIS: $asiaImpairmentScale)';
   }
 }

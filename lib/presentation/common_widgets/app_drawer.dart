@@ -19,7 +19,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home),
+            leading: const Icon(Icons.description),
             title: const Text(AppStrings.homeDrawerItem),
             onTap: () {
               Navigator.pop(context);
@@ -32,8 +32,30 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.description),
             title: const Text(AppStrings.asiaFormDrawerItem),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/asia_form');
+              Navigator.pop(context); // Fecha o drawer
+
+              // Verifica se estamos na tela inicial. Se não estivermos, não sabemos
+              // qual paciente usar, então não devemos ir para o formulário ASIA.
+              if (ModalRoute.of(context)?.settings.name == '/') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Por favor, preencha os dados do paciente primeiro e clique em "Salvar e Continuar".',
+                    ),
+                  ),
+                );
+              } else {
+                // Se o usuário já passou da tela inicial, é mais seguro voltar
+                // para ela do que tentar ir para o formulário ASIA sem um ID.
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Navegue a partir da tela de informações iniciais.',
+                    ),
+                  ),
+                );
+                Navigator.pushReplacementNamed(context, '/');
+              }
             },
           ),
           ListTile(

@@ -8,6 +8,9 @@ import 'package:bem_te_vi/presentation/widgets/asia_totals_section.dart';
 import 'package:bem_te_vi/presentation/widgets/level_input_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:bem_te_vi/core/database/app_database.dart';
+import 'package:drift/drift.dart' as drift;
 
 class AsiaFormScreen extends StatelessWidget {
   const AsiaFormScreen({super.key});
@@ -74,7 +77,9 @@ class AsiaFormScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final patientId = ModalRoute.of(context)!.settings.arguments as int;
     final asiaProvider = Provider.of<AsiaFormProvider>(context);
+    final database = Provider.of<AppDatabase>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -93,14 +98,45 @@ class AsiaFormScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.save),
             tooltip: 'Salvar Formulário',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Funcionalidade de salvar não implementada (frontend apenas).',
-                  ),
-                ),
+            onPressed: () async {
+              final cellsJson = jsonEncode(
+                asiaProvider.cells.map((cell) => cell.toJson()).toList(),
               );
+
+              final formCompanion = AsiaFormsCompanion(
+                patientId: drift.Value(patientId),
+                cellsData: drift.Value(cellsJson),
+                voluntaryAnalContraction: drift.Value(
+                  asiaProvider.voluntaryAnalContraction,
+                ),
+                deepAnalPressure: drift.Value(asiaProvider.deepAnalPressure),
+                rightLowestNonKeyMuscle: drift.Value(
+                  asiaProvider.rightLowestNonKeyMuscle,
+                ),
+                leftLowestNonKeyMuscle: drift.Value(
+                  asiaProvider.leftLowestNonKeyMuscle,
+                ),
+                comments: drift.Value(asiaProvider.comments),
+              );
+
+              try {
+                await database.into(database.asiaForms).insert(formCompanion);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Formulário ASIA salvo com sucesso!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Erro ao salvar o formulário: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
           ),
         ],

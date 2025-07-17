@@ -5,18 +5,24 @@ import 'package:bem_te_vi/core/providers/patient_form_provider.dart';
 import 'package:bem_te_vi/core/providers/asia_form_provider.dart';
 import 'package:bem_te_vi/presentation/screens/home_screen.dart';
 import 'package:bem_te_vi/presentation/screens/asia_form_screen.dart';
+import 'package:bem_te_vi/core/database/app_database.dart';
 
 void main() {
-  runApp(const MyApp());
+  final AppDatabase database = AppDatabase();
+
+  runApp(MyApp(database: database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppDatabase database;
+  const MyApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<AppDatabase>.value(value: database),
+
         ChangeNotifierProvider(create: (context) => PatientFormProvider()),
         ChangeNotifierProvider(create: (context) => AsiaFormProvider()),
       ],
