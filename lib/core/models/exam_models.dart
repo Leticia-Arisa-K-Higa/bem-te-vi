@@ -25,7 +25,7 @@ class Exam {
   final ExamSide right;
   final ExamSide left;
   final String voluntaryAnalContraction; // 'Yes', 'No', ou 'NT'
-  final String deepAnalPressure;         // 'Yes', 'No', ou 'NT'
+  final String deepAnalPressure; // 'Yes', 'No', ou 'NT'
 
   Exam({
     required this.right,
